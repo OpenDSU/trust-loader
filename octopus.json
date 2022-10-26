@@ -7,7 +7,7 @@
       "actions": [
         {
           "type": "copy",
-          "src": "../../../privatesky/psknode/bundles/swBoot.js",
+          "src": "../../../opendsu-sdk/psknode/bundles/swBoot.js",
           "target": "./swBoot.js",
           "options": {
             "overwrite": true
@@ -15,7 +15,7 @@
         },
         {
           "type": "copy",
-          "src": "../../../privatesky/psknode/bundles/webshims.js",
+          "src": "../../../opendsu-sdk/psknode/bundles/webshims.js",
           "target": "./bundles/webshims.js",
           "options": {
             "overwrite": true
@@ -23,7 +23,7 @@
         },
         {
           "type": "copy",
-          "src": "../../../privatesky/psknode/bundles/loaderBoot.js",
+          "src": "../../../opendsu-sdk/psknode/bundles/loaderBoot.js",
           "target": "./bundles/loaderBoot.js",
           "options": {
             "overwrite": true
