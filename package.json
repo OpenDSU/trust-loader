@@ -8,7 +8,7 @@
         "build": "node ./node_modules/octopus/scripts/run build"
     },
     "dependencies": {
-        "octopus": "git+https://github.com/PrivateSky/octopus.git#1.0"
+        "octopus": "git+https://github.com/opendsu/octopus.git#1.0"
     },
     "devDependencies": {
         "workbox-cli": "6.4.2"
