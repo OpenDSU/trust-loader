@@ -3,7 +3,7 @@
     "version": "v0.2.7",
     "description": "Web Loader for the Wallet User Interface",
     "scripts": {
-        "postinstall": "node ./node_modules/octopus/scripts/run devmode",
+        "postinstall": "node ./node_modules/octopus/scripts/run dependencies devmode",
         "update": "npm run postinstall",
         "build": "node ./node_modules/octopus/scripts/run build devmode"
     },
