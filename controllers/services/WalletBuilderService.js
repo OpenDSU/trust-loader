@@ -4,7 +4,8 @@ import FileService from "./FileService.js";
 import getVaultDomain from "../../utils/getVaultDomain.js";
 
 //if (!LOADER_GLOBALS) {
-    import "./../../loader-config.js";
+import "./../../loader-config.js";
+
 //}
 
 /**
@@ -18,9 +19,9 @@ import getVaultDomain from "../../utils/getVaultDomain.js";
 function WalletBuilderService(options) {
     const defaultOptions = LOADER_GLOBALS.WALLET_BUILDER_SERVICE;
 
-    if(options){
+    if (options) {
         options = Object.assign(defaultOptions, options);
-    }else{
+    } else {
         options = defaultOptions;
     }
 
@@ -65,7 +66,7 @@ function WalletBuilderService(options) {
     const getWalletTemplateContent = (callback) => {
         fileService.getFolderContentAsJSON(WALLET_TEMPLATE_FOLDER, (err, data) => {
             if (err) {
-                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to get content for "+ WALLET_TEMPLATE_FOLDER, err));
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to get content for " + WALLET_TEMPLATE_FOLDER, err));
             }
 
             let content;
@@ -178,7 +179,7 @@ function WalletBuilderService(options) {
         const instantiateNewDossier = (files) => {
             let resolver = require("opendsu").loadApi("resolver");
             let keyssi = require("opendsu").loadApi("keyssi");
-            resolver.createDSU(keyssi.createTemplateSeedSSI(VAULT_DOMAIN, undefined, undefined,undefined,LOADER_GLOBALS.environment.vault), (err, appDSU) => {
+            resolver.createDSU(keyssi.createTemplateSeedSSI(VAULT_DOMAIN), (err, appDSU) => {
                 if (err) {
                     return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to create DSU ", err));
                 }
@@ -451,11 +452,15 @@ function WalletBuilderService(options) {
         let _build = () => {
             fileService.getFile(WALLET_TEMPLATE_FOLDER + "/" + SSI_FILE_NAME, (err, dsuType) => {
                 if (err) {
-                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to read wallet dsu type from ${WALLET_TEMPLATE_FOLDER + "/" + SSI_FILE_NAME}`,err));
+                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to read wallet dsu type from ${WALLET_TEMPLATE_FOLDER + "/" + SSI_FILE_NAME}`, err));
                 }
-                resolver.createDSU(keySSISpace.createTemplateWalletSSI(domain, options['secret'], LOADER_GLOBALS.environment.vault), {useSSIAsIdentifier:true, dsuTypeSSI: dsuType, walletKeySSI: options['walletKeySSI']}, (err, walletDSU) => {
+                resolver.createDSU(keySSISpace.createTemplateWalletSSI(domain, options['secret']), {
+                    useSSIAsIdentifier: true,
+                    dsuTypeSSI: dsuType,
+                    walletKeySSI: options['walletKeySSI']
+                }, (err, walletDSU) => {
                     if (err) {
-                        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to create wallet of type  ${dsuType}`,err));
+                        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to create wallet of type  ${dsuType}`, err));
                     }
                     console.log("ConstDSU Wallet has SSI:", walletDSU.getCreationSSI(true));
                     walletDSU = walletDSU.getWritableDSU();
@@ -467,7 +472,7 @@ function WalletBuilderService(options) {
                         // we need to remove dsu type identifier from the file list
                         files['/'][SSI_FILE_NAME] = undefined;
                         delete files['/'][SSI_FILE_NAME];
-                        if(!options.walletKeySSI){
+                        if (!options.walletKeySSI) {
                             install(walletDSU, files, (err) => {
                                 if (err) {
                                     return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to install`, err));
@@ -481,7 +486,7 @@ function WalletBuilderService(options) {
                                 });
 
                             });
-                        }else{
+                        } else {
                             callback(undefined, walletDSU);
                         }
                     });
@@ -490,14 +495,14 @@ function WalletBuilderService(options) {
             });
         }
 
-        resolver.loadDSU(keySSISpace.createTemplateWalletSSI(domain,  options['secret'], LOADER_GLOBALS.environment.vault), (err, walletDSU) => {
-           if(err){
-               _build();
-           } else {
-              console.log("Possible security issue. It is ok during development if you use the same credentials. Just do a npm run clean to remove APIHub cache in this case...");
-               walletDSU = walletDSU.getWritableDSU();
-               callback(err, walletDSU);
-           }
+        resolver.loadDSU(keySSISpace.createTemplateWalletSSI(domain, options['secret']), (err, walletDSU) => {
+            if (err) {
+                _build();
+            } else {
+                console.log("Possible security issue. It is ok during development if you use the same credentials. Just do a npm run clean to remove APIHub cache in this case...");
+                walletDSU = walletDSU.getWritableDSU();
+                callback(err, walletDSU);
+            }
         });
     };
 

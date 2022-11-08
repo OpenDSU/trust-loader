@@ -8,128 +8,128 @@ import NavigatorUtils from "./NavigatorUtils.js";
  * @param {string} options.seed
  */
 function WalletService(options) {
-  options = options || {};
+    options = options || {};
 
-  this.keySSI = options.keySSI;
+    this.keySSI = options.keySSI;
 
-  const openDSU = require("opendsu");
-  const resolver = openDSU.loadApi("resolver");
+    const openDSU = require("opendsu");
+    const resolver = openDSU.loadApi("resolver");
 
-  /**
-   * @param {string} seedSSI
-   * @param {Function} callback
-   */
-  this.restoreFromSeedSSI = function (seedSSI, callback) {
-    let resolver = require("opendsu").loadApi("resolver");
-    resolver.loadDSU(seedSSI, (err) => {
-      callback(err);
-    });
-  };
+    /**
+     * @param {string} seedSSI
+     * @param {Function} callback
+     */
+    this.restoreFromSeedSSI = function (seedSSI, callback) {
+        let resolver = require("opendsu").loadApi("resolver");
+        resolver.loadDSU(seedSSI, (err) => {
+            callback(err);
+        });
+    };
 
-  /**
-   * @param {string} secret
-   * @param {Function} callback
-   */
-  this.load = function (domain, secret, callback) {
-    console.log("Loading the wallet");
-    NavigatorUtils.unregisterAllServiceWorkers((err, result) => {
-      if(err){
-        return callback(err)
-      }
-      let resolver = require("opendsu").loadApi("resolver");
-      let keyssi = require("opendsu").loadApi("keyssi");
+    /**
+     * @param {string} secret
+     * @param {Function} callback
+     */
+    this.load = function (domain, secret, callback) {
+        console.log("Loading the wallet");
+        NavigatorUtils.unregisterAllServiceWorkers((err, result) => {
+            if (err) {
+                return callback(err)
+            }
+            let resolver = require("opendsu").loadApi("resolver");
+            let keyssi = require("opendsu").loadApi("keyssi");
 
-      let walletSSI = keyssi.createTemplateWalletSSI(domain, secret, LOADER_GLOBALS.environment.vault);
+            let walletSSI = keyssi.createTemplateWalletSSI(domain, secret);
 
-      resolver.loadDSU(walletSSI, (err, constDSU) => {
-        if (err) {
-          return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to load wallet", err));
-        }
-        callback(undefined, constDSU.getWritableDSU());
-      });
-    });
-  };
+            resolver.loadDSU(walletSSI, (err, constDSU) => {
+                if (err) {
+                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to load wallet", err));
+                }
+                callback(undefined, constDSU.getWritableDSU());
+            });
+        });
+    };
 
-  this.getConstDSU = function (domain, secret, callback) {
-    let resolver = require("opendsu").loadApi("resolver");
-    let keyssi = require("opendsu").loadApi("keyssi");
+    this.getConstDSU = function (domain, secret, callback) {
+        let resolver = require("opendsu").loadApi("resolver");
+        let keyssi = require("opendsu").loadApi("keyssi");
 
-    let walletSSI = keyssi.createTemplateWalletSSI(domain, secret, LOADER_GLOBALS.environment.vault);
+        let walletSSI = keyssi.createTemplateWalletSSI(domain, secret);
 
-    resolver.loadDSU(walletSSI, (err, constDSU) => {
-      if (err) {
-        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to load wallet", err));
-      }
-      callback(undefined, constDSU);
-    });
-  }
+        resolver.loadDSU(walletSSI, (err, constDSU) => {
+            if (err) {
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to load wallet", err));
+            }
+            callback(undefined, constDSU);
+        });
+    }
 
-  this.updateWallet = function () {
+    this.updateWallet = function () {
 
-  }
+    }
 
-  /**
-   * Create a new wallet
-   * @param {string|undefined} pin
-   * @param {Function} callback
-   */
-  this.create = function (domain, arrayWithSecrets, callback) {
-    console.log("Creating the wallet");
-    //NavigatorUtils.unregisterAllServiceWorkers(() => {
-    const walletBuilder = new WalletBuilderService();
+    /**
+     * Create a new wallet
+     * @param {string|undefined} pin
+     * @param {Function} callback
+     */
+    this.create = function (domain, arrayWithSecrets, callback) {
+        console.log("Creating the wallet");
+        //NavigatorUtils.unregisterAllServiceWorkers(() => {
+        const walletBuilder = new WalletBuilderService();
 
-    walletBuilder.build({secret: arrayWithSecrets}, (err, wallet) => {
-      if (err) {
-        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to create Wallet", err));
-      }
-      callback(undefined, wallet);
-    });
-    // });
-  };
+        walletBuilder.build({secret: arrayWithSecrets}, (err, wallet) => {
+            if (err) {
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to create Wallet", err));
+            }
+            callback(undefined, wallet);
+        });
+        // });
+    };
 
-  /**
-   * Create a new wallet
-   * @param options {secret : string|undefined, keySSI: string} pin and keySSI of the wallet to be mounted
-   * @param {Function} callback
-   */
-  this.createWithKeySSI = function (domain, options, callback) {
-    console.log("Creating the wallet");
-    //NavigatorUtils.unregisterAllServiceWorkers(() => {
-    const walletBuilder = new WalletBuilderService();
+    /**
+     * Create a new wallet
+     * @param options {secret : string|undefined, keySSI: string} pin and keySSI of the wallet to be mounted
+     * @param {Function} callback
+     */
+    this.createWithKeySSI = function (domain, options, callback) {
+        console.log("Creating the wallet");
+        //NavigatorUtils.unregisterAllServiceWorkers(() => {
+        const walletBuilder = new WalletBuilderService();
 
-    walletBuilder.build(options, (err, wallet) => {
-      if (err) {
-        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to create Wallet", err));
-      }
-      callback(undefined, wallet);
-    });
-    // });
-  };
-  /**
-   * Rebuild an existing wallet
-   * @param {array|undefined} key
-   * @param {callback} callback
-   */
-  this.rebuild = function (domain, key, callback) {
-    this.load(domain, key, (err, wallet) => {
-      if (err) {
-        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to load wallet in rebuild", err));
-      }
+        walletBuilder.build(options, (err, wallet) => {
+            if (err) {
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to create Wallet", err));
+            }
+            callback(undefined, wallet);
+        });
+        // });
+    };
+    /**
+     * Rebuild an existing wallet
+     * @param {array|undefined} key
+     * @param {callback} callback
+     */
+    this.rebuild = function (domain, key, callback) {
+        this.load(domain, key, (err, wallet) => {
+            if (err) {
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to load wallet in rebuild", err));
+            }
 
-      const walletBuilder = new WalletBuilderService(wallet, {
-        dossierLoader: function (keySSI, callback) {
-          resolver.loadDSU(keySSI, callback);
-        }
-      });
+            const walletBuilder = new WalletBuilderService(wallet, {
+                dossierLoader: function (keySSI, callback) {
+                    resolver.loadDSU(keySSI, callback);
+                }
+            });
 
-      walletBuilder.rebuild(domain, (err) => {
-        if (err) {
-          return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to rebuild wallet", err));
-        }
-        callback(undefined, wallet);
-      });
-    });
-  };
+            walletBuilder.rebuild(domain, (err) => {
+                if (err) {
+                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to rebuild wallet", err));
+                }
+                callback(undefined, wallet);
+            });
+        });
+    };
 }
 
 export default WalletService;
