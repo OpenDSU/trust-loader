@@ -2,6 +2,7 @@ import "./../loader-config.js";
 import {
   Spinner,
   toggleViewPassword,
+  removeFormError,
   showFormError,
   prepareViewContent,
   addToggleViewPassword
@@ -159,6 +160,7 @@ function RecoverWalletController() {
     this.getWalletFromKeySSI(recoveryKey, (err, wallet) => {
       if (err) {
         spinner.removeFromView();
+        removeFormError();
         showFormError(document.getElementById("recover-key-form"), LOADER_GLOBALS.LABELS_DICTIONARY.WRONG_KEY);
         return console.log(err);
       }

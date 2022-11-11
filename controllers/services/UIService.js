@@ -169,7 +169,9 @@ function showFormError(formElement, message) {
 * */
 function removeFormError() {
   let element = document.getElementById("custom-form-error-message");
-  element.remove()
+  if(element !== null) {
+    element.remove()
+  }
 }
 
 /*
