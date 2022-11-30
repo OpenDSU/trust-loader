@@ -18,14 +18,9 @@ function parseCookies(cookies) {
     return parsedCookies;
 }
 
-function removeTimezoneOffsetFromTimestamp(timestamp) {
-    let currentDate = new Date(timestamp);
-    return timestamp + currentDate.getTimezoneOffset() * 60 * 1000;
-}
-
 const handler = setInterval(() => {
     const {sessionExpiryTime} = parseCookies(document.cookie);
-    if (sessionExpiryTime && parseInt(sessionExpiryTime) < removeTimezoneOffsetFromTimestamp(Date.now())) {
+    if (sessionExpiryTime && parseInt(sessionExpiryTime) < Date.now()) {
         clearInterval(handler);
         window.location = "/logout"
     }
