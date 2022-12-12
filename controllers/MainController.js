@@ -262,19 +262,48 @@ function MainController() {
 
       let writableWallet = wallet;
 
-      writableWallet.getKeySSIAsString((err, keySSI) => {
+      writableWallet.getKeySSIAsString((err, keySSIString) => {
         if (err) {
           console.error(err);
           return console.error("Operation failed. Try again");
         }
 
-        console.log(`Loading wallet ${keySSI}`);
+        console.log(`Loading wallet ${keySSIString}`);
 
-        new WalletRunner({
-          seed: keySSI,
-          spinner: self.spinner
-        }).run();
+        writableWallet.getKeySSIAsObject((err, keySSI) => {
+            if (err) {
+              console.error(err);
+              return console.error("Operation failed. Try again");
+            }
+
+            keySSI.getAnchorId((err, anchorId) => {
+                if (err) {
+                  console.error(err);
+                  return console.error("Operation failed. Try again");
+                }
+                
+                this.setSSAppToken(anchorId, keySSIString, (err) => {
+                  if (err) {
+                    console.error(err);
+                    return console.error("Operation failed. Try again");
+                  }
+
+                  new WalletRunner({
+                    seed: keySSIString,
+                    anchorId,
+                    spinner: self.spinner
+                  }).run();
+                })
+            });
+        });
       });
+    });
+  }
+
+  this.setSSAppToken = function(walletAnchorId, sReadSSI, callback) {
+    let url = fileService.getBaseURL(`cloud-wallet/setSSAPPToken/${walletAnchorId}`);
+    createXMLHttpRequest(url, "PUT", {sReadSSI}, (err, result) => {
+      callback(err, result);
     });
   }
 

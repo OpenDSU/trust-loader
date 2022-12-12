@@ -62,9 +62,18 @@ function decrypt(key, encryptedData) {
   }
 }
 
-function createXMLHttpRequest(url, method, callback) {
+function createXMLHttpRequest(url, method, body, callback) {
+  if(typeof body === "function") {
+    callback = body;
+    body = null;
+  }
+
   let xhr = new XMLHttpRequest();
   xhr.open(method, url);
+  if(body) {
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+  }
+
   xhr.onload = function () {
     if (xhr.status != 200) {
       callback({errorStatus: xhr.status});
@@ -75,6 +84,11 @@ function createXMLHttpRequest(url, method, callback) {
   xhr.onerror = function () {
     callback("Request failed");
   };
+
+  if(body) {
+    xhr.send(JSON.stringify(body));
+  }
+
   return xhr;
 }
 
