@@ -18,10 +18,11 @@ function getIFrameBase() {
 function WalletRunner(options) {
   options = options || {};
 
-  if (!options.seed) {
-    throw new Error("Missing seed");
+  if (!options.seed && !options.anchorId) {
+    throw new Error("Missing seed or anchorId");
   }
   this.seed = options.seed;
+  this.anchorId = options.anchorId;
   this.hash = crypto.sha256(this.seed);
   this.spinner = options.spinner;
 
@@ -45,7 +46,8 @@ function WalletRunner(options) {
 
     // This request will be intercepted by swLoader.js
     // and will make the iframe load the app-loader.js script
-    iframe.src = window.location.origin + getIFrameBase() + (useSeedForIframeSource ? this.seed : this.hash);
+    const iframeSuffix = useSeedForIframeSource ? this.anchorId || this.seed : this.hash;
+    iframe.src = window.location.origin + getIFrameBase() + iframeSuffix;
     return iframe;
   };
 
