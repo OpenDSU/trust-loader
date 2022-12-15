@@ -245,6 +245,12 @@ function MainController() {
     });
   }
 
+  this.errorAlert = function (errSource, errCode, err) {
+    console.error(`${errSource} Operation failed. Error: ${err} `);
+    alert(`Operation failed.\u000AError code ${errCode}\u000APlease try again. If problem persists contact your support team.`);
+    this.goToLandingPage();
+  }
+
   this.loadWallet = function () {
     walletService.load(getVaultDomain(), getWalletSecretArrayKey(), (err, wallet) => {
       if (err) {
@@ -264,43 +270,43 @@ function MainController() {
 
       writableWallet.getKeySSIAsString((err, keySSIString) => {
         if (err) {
-          console.error(err);
-          return console.error("Operation failed. Try again");
+          this.errorAlert("getKeySSIAsString", "01", err);
+          return
         }
 
         console.log(`Loading wallet ${keySSIString}`);
 
         writableWallet.getKeySSIAsObject((err, keySSI) => {
+          if (err) {
+            this.errorAlert("getKeySSIAsObject", "02", err);
+            return
+          }
+
+          keySSI.getAnchorId((err, anchorId) => {
             if (err) {
-              console.error(err);
-              return console.error("Operation failed. Try again");
+              this.errorAlert("getAnchorId", "03", err);
+              return
             }
 
-            keySSI.getAnchorId((err, anchorId) => {
-                if (err) {
-                  console.error(err);
-                  return console.error("Operation failed. Try again");
-                }
-                
-                this.setSSAppToken(anchorId, keySSIString, (err) => {
-                  if (err) {
-                    console.error(err);
-                    return console.error("Operation failed. Try again");
-                  }
+            this.setSSAppToken(anchorId, keySSIString, (err) => {
+              if (err) {
+                this.errorAlert("setSSAppToken", "04", err);
+                return
+              }
 
-                  new WalletRunner({
-                    seed: keySSIString,
-                    anchorId,
-                    spinner: self.spinner
-                  }).run();
-                })
-            });
+              new WalletRunner({
+                seed: keySSIString,
+                anchorId,
+                spinner: self.spinner
+              }).run();
+            })
+          });
         });
       });
     });
   }
 
-  this.setSSAppToken = function(walletAnchorId, sReadSSI, callback) {
+  this.setSSAppToken = function (walletAnchorId, sReadSSI, callback) {
     let url = fileService.getBaseURL(`cloud-wallet/setSSAPPToken/${walletAnchorId}`);
     createXMLHttpRequest(url, "PUT", {sReadSSI}, (err, result) => {
       callback(err, result);

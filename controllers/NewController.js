@@ -155,6 +155,12 @@ function NewController() {
     }
   };
 
+  this.errorAlert = function (errSource, errCode, err) {
+    console.error(`${errSource} Operation failed. Error: ${err} `);
+    alert(`Operation failed.\u000AError code ${errCode}\u000APlease try again. If problem persists contact your support team.`);
+    this.goToLandingPage();
+  }
+
   this.loadWallet = function () {
     walletService.load(getVaultDomain(), getWalletSecretArrayKey(), (err, wallet) => {
       if (err) {
@@ -169,8 +175,8 @@ function NewController() {
 
       wallet.getKeySSIAsString((err, keySSI) => {
         if (err) {
-          console.error(err);
-          return console.error("Operation failed. Try again");
+          this.errorAlert("getKeySSIAsString", "01", err);
+          return
         }
 
         console.log(`Loading wallet ${keySSI}`);
