@@ -80,13 +80,8 @@ let LOADER_GLOBALS = {
     },
     option2: {
       label: "Change password",
-      action: : "changePassword"
-    },
-    /* Not implemented yet
-      option3: {
-      label: "Change pin",
-      action: "changePin"
-    }*/
+      action: "changePassword"
+    }
   },
   LABELS_DICTIONARY: {
     APP_NAME: "Trust loader",
