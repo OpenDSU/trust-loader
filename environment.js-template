@@ -7,7 +7,7 @@ export default{
   "mode":  "dev-autologin",
   "domain":  "default",
   "stage":  "release",
-  "sw": true,
+  "sw": false,
   "pwa":false,
   "allowPinLogin": false,
   "companyName": "Company Inc"
