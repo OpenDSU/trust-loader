@@ -22,6 +22,7 @@ const handler = setInterval(() => {
     const {sessionExpiryTime} = parseCookies(document.cookie);
     if (sessionExpiryTime && parseInt(sessionExpiryTime) < Date.now()) {
         clearInterval(handler);
+        window.disableRefreshSafetyAlert = true;
         window.location = "/logout"
     }
 }, 1000);
