@@ -1,6 +1,6 @@
 {
     "name": "trust-loader",
-    "version": "v0.3.3",
+    "version": "v1.1.1",
     "description": "Web Loader for the Wallet User Interface",
     "scripts": {
         "postinstall": "node ./node_modules/octopus/scripts/run dependencies devmode",
