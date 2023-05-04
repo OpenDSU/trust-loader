@@ -521,7 +521,7 @@ function WalletBuilderService(options) {
                         files['/'][SSI_FILE_NAME] = undefined;
                         delete files['/'][SSI_FILE_NAME];
                         if (!options.walletKeySSI) {
-                            walletDSU.beginSafeBatch((err) => {
+                            walletDSU.safeBeginBatch((err) => {
                                 if (err) {
                                     return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to begin safe batch`, err));
                                 }
