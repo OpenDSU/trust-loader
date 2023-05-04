@@ -524,14 +524,22 @@ function WalletBuilderService(options) {
                                 if (err) {
                                     return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to install`, err));
                                 }
-
-                                return walletDSU.writeFile("/environment.json", JSON.stringify(LOADER_GLOBALS.environment), (err) => {
+                                walletDSU.beginSafeBatch((err) => {
                                     if (err) {
-                                        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Could not write Environment file into wallet.", err));
+                                        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to begin safe batch`, err));
                                     }
-                                    callback(undefined, walletDSU);
-                                });
-
+                                    walletDSU.writeFile("/environment.json", JSON.stringify(LOADER_GLOBALS.environment), (err) => {
+                                        if (err) {
+                                            return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Could not write Environment file into wallet.", err));
+                                        }
+                                        walletDSU.commitBatch((err) => {
+                                            if (err) {
+                                                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to commit batch`, err));
+                                            }
+                                            callback(undefined, walletDSU);
+                                        });
+                                    })
+                                })
                             });
                         } else {
                             callback(undefined, walletDSU);
