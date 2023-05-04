@@ -135,27 +135,13 @@ function WalletBuilderService(options) {
         } else {
             fileContent = file.content;
         }
-        dsu.safeBeginBatch(err => {
-            if (err) {
-                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to begin batch", err));
-            }
-            dsu.writeFile(targetPath, fileContent, (err) => {
-                if (err) {
-                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to write file in DSU at path ", targetPath, err));
-                }
-                dsu.commitBatch(err => {
-                    if (err) {
-                        return dsu.cancelBatch(err => {
-                           if(err){
-                               return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to cancel batch", err));
-                           }
 
-                            return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to commit batch", err));
-                        });
-                    }
-                    customizeDSU(dsu, files, prefix, callback);
-                });
-            });
+        dsu.writeFile(targetPath, fileContent, (err) => {
+            if (err) {
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to write file in DSU at path ", targetPath, err));
+            }
+
+            customizeDSU(dsu, files, prefix, callback);
         });
     };
 
@@ -200,19 +186,19 @@ function WalletBuilderService(options) {
                     return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to create DSU ", err));
                 }
 
-                appDSU.mount('/' + CODE_FOLDER, seed, (err) => {
+                appDSU.safeBeginBatch(err => {
                     if (err) {
-                        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to mount in /code seedSSI ", seed, err));
+                        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to begin batch", err));
                     }
-                    customizeDSU(appDSU, files, `/${APP_FOLDER}`, (err) => {
-                        if (err) {
-                            return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to customize DSU", err));
-                        }
-                        appDSU.safeBeginBatch(err => {
-                            if (err) {
-                                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to begin batch", err));
-                            }
 
+                    appDSU.mount('/' + CODE_FOLDER, seed, (err) => {
+                        if (err) {
+                            return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to mount in /code seedSSI ", seed, err));
+                        }
+                        customizeDSU(appDSU, files, `/${APP_FOLDER}`, (err) => {
+                            if (err) {
+                                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to customize DSU", err));
+                            }
                             appDSU.writeFile("/code/initialization.js", `require("/code/${APP_FOLDER}/initialization.js")`, (err) => {
                                 if (err) {
                                     return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to write initialization file", err));
@@ -220,7 +206,7 @@ function WalletBuilderService(options) {
                                 appDSU.commitBatch(err => {
                                     if (err) {
                                         return appDSU.cancelBatch(err => {
-                                            if(err){
+                                            if (err) {
                                                 return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to cancel batch", err));
                                             }
 
@@ -316,8 +302,23 @@ function WalletBuilderService(options) {
             files = dirSummaryAsArray(files);
 
             const appDossier = this.dossierLoader(seed);
-            customizeDSU(appDossier, files, `/${APP_FOLDER}`, (err) => {
-                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to customize DSU", err));
+            appDossier.safeBeginBatch(err => {
+                if (err) {
+                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to begin batch", err));
+                }
+
+                customizeDSU(appDossier, files, `/${APP_FOLDER}`, (err) => {
+                    if (err) {
+                        return appDossier.cancelBatch(err => {
+                            if (err) {
+                                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to cancel batch", err));
+                            }
+                            OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to customize DSU", err));
+                        })
+                    }
+
+                    appDossier.commitBatch(callback);
+                })
             })
         })
 
@@ -520,14 +521,15 @@ function WalletBuilderService(options) {
                         files['/'][SSI_FILE_NAME] = undefined;
                         delete files['/'][SSI_FILE_NAME];
                         if (!options.walletKeySSI) {
-                            install(walletDSU, files, (err) => {
+                            walletDSU.beginSafeBatch((err) => {
                                 if (err) {
-                                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to install`, err));
+                                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to begin safe batch`, err));
                                 }
-                                walletDSU.beginSafeBatch((err) => {
+                                install(walletDSU, files, (err) => {
                                     if (err) {
-                                        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to begin safe batch`, err));
+                                        return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper(`Failed to install`, err));
                                     }
+
                                     walletDSU.writeFile("/environment.json", JSON.stringify(LOADER_GLOBALS.environment), (err) => {
                                         if (err) {
                                             return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Could not write Environment file into wallet.", err));
