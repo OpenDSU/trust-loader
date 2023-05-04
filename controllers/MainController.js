@@ -129,12 +129,24 @@ function MainController() {
       if (err) {
         throw createOpenDSUErrorWrapper(`Failed to create wallet in domain ${getVaultDomain()}`, err);
       }
-      wallet.writeFile(USER_DETAILS_FILE, JSON.stringify(LOADER_GLOBALS.credentials), (err) => {
+      wallet.safeBeginBatch(err => {
         if (err) {
-          throw createOpenDSUErrorWrapper("Failed to write user details in wallet", err);
+          return callback(err);
         }
-        console.log("A new wallet got initialised...", wallet.getCreationSSI(true));
-        return self.openWallet();
+          wallet.writeFile(USER_DETAILS_FILE, JSON.stringify(LOADER_GLOBALS.credentials), (err) => {
+              if (err) {
+                  throw createOpenDSUErrorWrapper("Failed to write user details in wallet", err);
+              }
+
+
+              wallet.commitBatch(err => {
+                  if (err) {
+                      return callback(err);
+                  }
+                  console.log("A new wallet got initialised...", wallet.getCreationSSI(true));
+                  return self.openWallet();
+              })
+          });
       });
     });
   }
@@ -232,7 +244,17 @@ function MainController() {
         objectToWrite[key] = LOADER_GLOBALS.credentials[key]
       }
     })
-    wallet.writeFile(USER_DETAILS_FILE, JSON.stringify(objectToWrite), callback);
+    wallet.safeBeginBatch(err => {
+        if (err) {
+            return callback(err);
+        }
+        wallet.writeFile(USER_DETAILS_FILE, JSON.stringify(objectToWrite), (err) => {
+            if (err) {
+            return callback(err);
+            }
+            wallet.commitBatch(callback);
+        });
+    })
   }
 
   this.getUserDetailsFromFile = function (wallet, callback) {

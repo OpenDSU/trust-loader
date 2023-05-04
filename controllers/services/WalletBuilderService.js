@@ -135,11 +135,27 @@ function WalletBuilderService(options) {
         } else {
             fileContent = file.content;
         }
-        dsu.writeFile(targetPath, fileContent, (err) => {
+        dsu.safeBeginBatch(err => {
             if (err) {
-                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to write file in DSU at path ", targetPath, err));
+                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to begin batch", err));
             }
-            customizeDSU(dsu, files, prefix, callback);
+            dsu.writeFile(targetPath, fileContent, (err) => {
+                if (err) {
+                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to write file in DSU at path ", targetPath, err));
+                }
+                dsu.commitBatch(err => {
+                    if (err) {
+                        return dsu.cancelBatch(err => {
+                           if(err){
+                               return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to cancel batch", err));
+                           }
+
+                            return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to commit batch", err));
+                        });
+                    }
+                    customizeDSU(dsu, files, prefix, callback);
+                });
+            });
         });
     };
 
@@ -192,13 +208,29 @@ function WalletBuilderService(options) {
                         if (err) {
                             return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to customize DSU", err));
                         }
-                        return appDSU.writeFile("/environment.json", JSON.stringify(LOADER_GLOBALS.environment), (err) => {
+                        appDSU.safeBeginBatch(err => {
                             if (err) {
-                                console.log("Could not write environment file into app", err);
+                                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to begin batch", err));
                             }
-                            appDSU.getKeySSIAsString(callback);
-                        });
-                        appDSU.getKeySSIAsString(callback);
+
+                            appDSU.writeFile("/code/initialization.js", `require("/code/${APP_FOLDER}/initialization.js")`, (err) => {
+                                if (err) {
+                                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to write initialization file", err));
+                                }
+                                appDSU.commitBatch(err => {
+                                    if (err) {
+                                        return appDSU.cancelBatch(err => {
+                                            if(err){
+                                                return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to cancel batch", err));
+                                            }
+
+                                            return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to commit batch", err));
+                                        });
+                                    }
+                                    appDSU.getKeySSIAsString(callback);
+                                });
+                            })
+                        })
                     })
                 })
             });
@@ -404,8 +436,23 @@ function WalletBuilderService(options) {
                         };
                     });
                     let landingApp = {name: externalAppsList[0]};
-                    walletDSU.writeFile("apps-patch/.landingApp", JSON.stringify(landingApp), () => {
-                        console.log(`Written landingApp [${landingApp.name}]. `)
+                    walletDSU.safeBeginBatch(err => {
+                        if (err) {
+                            return callback(err);
+                        }
+                        walletDSU.writeFile("apps-patch/.landingApp", JSON.stringify(landingApp), () => {
+                            walletDSU.commitBatch(err => {
+                                if (err) {
+                                    return walletDSU.cancelBatch(err => {
+                                        if (err) {
+                                            return callback(err);
+                                        }
+                                        return callback(err);
+                                    })
+                                }
+                                console.log(`Written landingApp [${landingApp.name}]. `)
+                            });
+                        });
                     });
                 }
             });

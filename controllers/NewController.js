@@ -45,7 +45,17 @@ function NewController() {
   }
 
   this.writeUserDetailsToFile = function (wallet, callback) {
-    wallet.writeFile(USER_DETAILS_FILE, JSON.stringify(LOADER_GLOBALS.credentials), callback);
+    wallet.safeBeginBatch(err => {
+        if (err) {
+            return callback(err);
+        }
+      wallet.writeFile(USER_DETAILS_FILE, JSON.stringify(LOADER_GLOBALS.credentials), err => {
+        if (err) {
+          return callback(err);
+        }
+        wallet.commitBatch(callback);
+      });
+    });
   }
 
   this.getUserDetailsFromFile = function (wallet, callback) {

@@ -96,7 +96,17 @@ function RecoverWalletController() {
         objectToWrite[key] = LOADER_GLOBALS.credentials[key]
       }
     })
-    wallet.writeFile(USER_DETAILS_FILE, JSON.stringify(objectToWrite), callback);
+    wallet.safeBeginBatch(err => {
+      if (err) {
+        return callback(err);
+      }
+      wallet.writeFile(USER_DETAILS_FILE, JSON.stringify(objectToWrite), err => {
+        if (err) {
+          return callback(err);
+        }
+        wallet.commitBatch(callback);
+      });
+    });
   }
 
   this.getUserDetailsFromFile = function (wallet, callback) {
