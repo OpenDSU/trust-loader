@@ -199,9 +199,9 @@ function WalletBuilderService(options) {
                             if (err) {
                                 return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to customize DSU", err));
                             }
-                            appDSU.writeFile("/code/initialization.js", `require("/code/${APP_FOLDER}/initialization.js")`, (err) => {
+                            return appDSU.writeFile("/environment.json", JSON.stringify(LOADER_GLOBALS.environment), (err) => {
                                 if (err) {
-                                    return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Failed to write initialization file", err));
+                                    console.log("Failed to write environment.json", err);
                                 }
                                 appDSU.commitBatch(err => {
                                     if (err) {
@@ -238,8 +238,6 @@ function WalletBuilderService(options) {
             })
         }
         instantiateNewDossier([]);
-
-
     };
 
     /**
