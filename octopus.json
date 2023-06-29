@@ -7,14 +7,6 @@
       "actions": [
         {
           "type": "copy",
-          "src": "../../../opendsu-sdk/psknode/bundles/webshims.js",
-          "target": "./bundles/webshims.js",
-          "options": {
-            "overwrite": true
-          }
-        },
-        {
-          "type": "copy",
           "src": "../../../opendsu-sdk/psknode/bundles/loaderBoot.js",
           "target": "./bundles/loaderBoot.js",
           "options": {
