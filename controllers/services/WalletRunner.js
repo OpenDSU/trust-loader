@@ -8,7 +8,7 @@ const crypto = require("opendsu").loadApi("crypto");
 
 function getIFrameBase() {
   let iPath = window.location.pathname;
-  if(LOADER_GLOBALS.environment && LOADER_GLOBALS.environment.sw){
+  if (LOADER_GLOBALS.environment && LOADER_GLOBALS.environment.sw) {
     return iPath.replace("index.html", "") + "iframe/";
   }
   return iPath.split("loader/")[0] + "loader/cloud-wallet/";
@@ -41,6 +41,8 @@ function WalletRunner(options) {
     iframe.style.width = "100%";
     iframe.style.display = "block";
     iframe.style.zIndex = "100";
+    iframe.width = "100%";
+    iframe.height = "100%";
 
     iframe.setAttribute("identity", this.hash);
 
@@ -67,7 +69,7 @@ function WalletRunner(options) {
         this.spinner.removeFromView();
       }
 
-      let { iframe, spinner, rest } = elements || {};
+      let {iframe, spinner, rest} = elements || {};
 
       if (typeof iframe !== 'boolean') {
         iframe = false;
@@ -95,8 +97,8 @@ function WalletRunner(options) {
       try {
         if (rest) {
           document
-              .querySelectorAll("body > *:not(iframe):not(.loader-parent-container)")
-              .forEach((node) => node.remove());
+            .querySelectorAll("body > *:not(iframe):not(.loader-parent-container)")
+            .forEach((node) => node.remove());
         }
       } catch (error) {
         // some UI Elements could not be found
@@ -108,7 +110,7 @@ function WalletRunner(options) {
         let node = document.createElement("div");
         node.className = "app-action-button";
         let options = document.createElement("ul");
-        options.className="hidden";
+        options.className = "hidden";
         LOADER_GLOBALS.saveCredentials();
         Object.keys(LOADER_GLOBALS.ACTION_BUTTON_OPTIONS).forEach(key => {
           let liElem = document.createElement("li");
@@ -130,7 +132,7 @@ function WalletRunner(options) {
         }, 3000)
       }
 
-      let { actionButton } = elements || {};
+      let {actionButton} = elements || {};
 
       if (typeof actionButton !== 'boolean') {
         actionButton = false;
@@ -144,22 +146,22 @@ function WalletRunner(options) {
     const eventMiddleware = new EventMiddleware(iframeElement, this.hash);
 
     eventMiddleware.registerQuery("seed", () => {
-      return { seed: this.seed };
+      return {seed: this.seed};
     });
 
     eventMiddleware.onStatus("completed", () => {
       // "app-placeholder" is injected by service worker
       // in that case 2 completed events are emitted
       if (iframeElement.hasAttribute("app-placeholder")) {
-        removeElementsFromUI({ iframe: true, spinner: false, rest: false });
+        removeElementsFromUI({iframe: true, spinner: false, rest: false});
         iframeElement.removeAttribute("app-placeholder");
         document.body.prepend(iframeElement);
         return;
       }
 
-      removeElementsFromUI({ spinner: true });
+      removeElementsFromUI({spinner: true});
       iframeElement.hidden = false;
-      appendElementsToUI({ actionButton: !!LOADER_GLOBALS.SHOW_ACTION_BUTTON });
+      appendElementsToUI({actionButton: !!LOADER_GLOBALS.SHOW_ACTION_BUTTON});
     });
 
     eventMiddleware.onStatus("sign-out", (data) => {
@@ -198,7 +200,7 @@ function WalletRunner(options) {
       return;
     }
 
-    const CompletedEvent = new CustomEvent(iframeIdentity, { detail: { status: 'completed' }});
+    const CompletedEvent = new CustomEvent(iframeIdentity, {detail: {status: 'completed'}});
 
     const pskCardinalRoot = iframeDocument.querySelector('psk-app-root');
     if (pskCardinalRoot) {
@@ -260,17 +262,17 @@ function WalletRunner(options) {
 
       this.spinner.setStatusText(`Loading ...`);
 
-/*      loadingInterval = setInterval(() => {
-        loadingProgress += loadingProgress >= 90 ? 1 : 10;
-        if (loadingProgress >= 100) {
-          clearInterval(loadingInterval);
-          return;
-        }
-        this.spinner.setStatusText(`Loading `);
-      }, 1000);*/
+      /*      loadingInterval = setInterval(() => {
+              loadingProgress += loadingProgress >= 90 ? 1 : 10;
+              if (loadingProgress >= 100) {
+                clearInterval(loadingInterval);
+                return;
+              }
+              this.spinner.setStatusText(`Loading `);
+            }, 1000);*/
 
       iframeElement.addEventListener('load', () => {
-      //  clearInterval(loadingInterval);
+        //  clearInterval(loadingInterval);
         sendCompletedEvent(iframeElement);
       });
 
@@ -287,7 +289,7 @@ function WalletRunner(options) {
 
     NavigatorUtils.unregisterAllServiceWorkers(() => {
       NavigatorUtils.registerSW(
-        { name: "swLoader.js", path: "swLoader.js", scope: getIFrameBase() },
+        {name: "swLoader.js", path: "swLoader.js", scope: getIFrameBase()},
         (error) => {
           if (error) {
             throw error;
