@@ -12,28 +12,9 @@
           "options": {
             "overwrite": true
           }
-        },
-        {
-          "type": "copy",
-          "src": "assets/defaults/images-pwa",
-          "target": "assets/images-pwa",
-          "options": {
-            "overwrite": true
-          }
         }
       ]
     }
   ],
-  "build": [
-    {
-      "name": "generate-service-worker",
-      "src": "",
-      "actions": [
-        {
-          "type": "execute",
-          "cmd": "workbox generateSW"
-        }
-      ]
-    }
-  ]
+  "build": []
 }

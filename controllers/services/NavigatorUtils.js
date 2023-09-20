@@ -1,5 +1,3 @@
-import { Workbox } from "../../assets/pwa/workbox-window.prod.mjs";
-
 let controllersChangeHandlers = [];
 
 let webmanifest = null;
@@ -256,62 +254,7 @@ const NavigatorUtils = {
         if (NavigatorUtils.canUseServiceWorkers()) {
             navigator.serviceWorker.addEventListener(eventType, callback);
         }
-    },
-
-    canRegisterPwa: () => {
-        return typeof LOADER_GLOBALS === "undefined" || !!LOADER_GLOBALS.environment.pwa;
-    },
-
-    registerPwaServiceWorker: () => {
-        if (!NavigatorUtils.canRegisterPwa()) {
-            console.log('PWA is not enabled for this application.');
-            return;
-        }
-
-        const showNewContentAvailable = () => {
-            if (confirm(`New content is available!. Click OK to refresh!`)) {
-                window.location.reload();
-            }
-        };
-
-        NavigatorUtils.getWebmanifest((err, manifest) => {
-            if (!manifest) {
-                // no manifest is available to the SW won't be registered
-                console.log('Skipping PWA registration due to missing manifest.webmanifest.');
-                return;
-            }
-
-            const scope = manifest.scope;
-            const wb = new Workbox("./swPwa.js", { scope: scope });
-
-            wb.register()
-                .then((registration) => {
-                    registration.addEventListener("updatefound", () => {
-                        console.log("updatefound", {
-                            installing: registration.installing,
-                            active: registration.active,
-                        });
-
-                        const activeWorker = registration.active;
-                        if (activeWorker) {
-                            activeWorker.addEventListener("statechange", () => {
-                                console.log("active statechange", activeWorker.state);
-                                if (activeWorker.state === "installed" && navigator.serviceWorker.controller) {
-                                    showNewContentAvailable();
-                                }
-                            });
-                        }
-                    });
-                })
-                .catch((err) => {
-                    console.log("swPwa registration issue", err);
-                });
-
-            setInterval(() => {
-                wb.update();
-            }, 60 * 1000);
-        });
-    },
+    }
 };
 
 export default NavigatorUtils;

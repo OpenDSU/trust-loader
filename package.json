@@ -10,8 +10,5 @@
     "dependencies": {
         "octopus": "git+https://github.com/opendsu/octopus.git"
     },
-    "devDependencies": {
-        "workbox-cli": "6.4.2"
-    },
     "license": "MIT"
 }

@@ -279,7 +279,6 @@ function WalletRunner(options) {
       document.body.appendChild(iframeElement);
       const timerElement = createTimerElement();
       document.body.appendChild(timerElement);
-      NavigatorUtils.registerPwaServiceWorker();
       return;
     }
 
@@ -295,7 +294,6 @@ function WalletRunner(options) {
             throw error;
           }
           iframeElement.addEventListener('load', () => {
-            NavigatorUtils.registerPwaServiceWorker();
             sendCompletedEvent(iframeElement);
           });
           document.body.appendChild(iframeElement);
