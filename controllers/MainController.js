@@ -471,7 +471,9 @@ document.addEventListener("DOMContentLoaded", function () {
     //to do get form ssooauth
     controller.userId = getCookie("SSOUserId");
     if (!controller.userId) {
-      alert("UserId not found!!!!");
+      //to prevent unwanted UI from renderer because we need to redirect...
+      document.body.setAttribute("style", "visibility:hidden");
+      window.location.href = "/logout";
       return;
     }
     controller.initSpinner();
