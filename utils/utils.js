@@ -107,6 +107,14 @@ function getCookie(cookieName) {
   return res
 }
 
+function getSSOId(ssoIdFieldName) {
+  let ssoDetectedId = localStorage.getItem(ssoIdFieldName);
+  if(!ssoDetectedId) {
+    ssoDetectedId = getCookie(ssoIdFieldName);
+  }
+  return ssoDetectedId;
+}
+
 export {
   getUrl,
   hash,
@@ -115,5 +123,6 @@ export {
   encrypt,
   decrypt,
   createXMLHttpRequest,
-  getCookie
+  getCookie,
+  getSSOId
 }

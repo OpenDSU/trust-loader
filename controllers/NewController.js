@@ -3,7 +3,7 @@ import {createFormElement, prepareView, prepareViewContent, Spinner} from "./ser
 import WalletService from "./services/WalletService.js";
 import NavigatorUtils from "./services/NavigatorUtils.js";
 import getVaultDomain from "../utils/getVaultDomain.js";
-import {createXMLHttpRequest, getCookie, encrypt, generateRandom} from "../utils/utils.js";
+import {createXMLHttpRequest, getSSOId, encrypt, generateRandom} from "../utils/utils.js";
 import FileService from "./services/FileService.js";
 
 function NewController() {
@@ -249,8 +249,8 @@ function NewController() {
 
   this.sendSSOPutRequest = function (encryptionKey) {
     const fileService = new FileService();
-    let userId = getCookie("SSOUserId");
-    let userEmail = getCookie("SSODetectedId");
+    let userId = getSSOId("SSOUserId");
+    let userEmail = getSSOId("SSODetectedId");
     let url = fileService.getBaseURL(`putSSOSecret/${LOADER_GLOBALS.environment.appName}`);
     console.log("=====================================================================================================")
     console.log(url);

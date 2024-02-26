@@ -4,7 +4,7 @@ import WalletService from "./services/WalletService.js";
 import FileService from "./services/FileService.js";
 import WalletRunner from "./services/WalletRunner.js";
 import getVaultDomain from "../utils/getVaultDomain.js";
-import {generateRandom, createXMLHttpRequest, getCookie, decrypt} from "../utils/utils.js";
+import {generateRandom, createXMLHttpRequest, getCookie, decrypt, getSSOId} from "../utils/utils.js";
 
 const fileService = new FileService();
 
@@ -395,7 +395,7 @@ function MainController() {
 
   this.openSSOWallet = function (userId, secret) {
     LOADER_GLOBALS.clearCredentials();
-    LOADER_GLOBALS.credentials.username = getCookie("SSODetectedId");
+    LOADER_GLOBALS.credentials.username = getSSOId("SSODetectedId");
     LOADER_GLOBALS.credentials.userId = userId;
     LOADER_GLOBALS.credentials.ssokey = secret;
     this.loadWallet();
@@ -469,7 +469,7 @@ const controller = new MainController();
 document.addEventListener("DOMContentLoaded", function () {
   if (LOADER_GLOBALS.environment.mode === "sso-direct" || LOADER_GLOBALS.environment.mode === "sso-pin") {
     //to do get form ssooauth
-    controller.userId = getCookie("SSOUserId");
+    controller.userId = getSSOId("SSOUserId");
     if (!controller.userId) {
       //to prevent unwanted UI from renderer because we need to redirect...
       document.body.setAttribute("style", "visibility:hidden");
