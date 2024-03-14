@@ -1,7 +1,7 @@
 const CHECK_IF_SESSION_HAS_EXPIRED_URL = `${window.location.origin}/checkIfSessionHasExpired`;
 const LOGOUT_WAS_TRIGGERED_URL = `${window.location.origin}/logoutWasTriggered`;
 
-window.sessionHandler = setInterval(async () => {
+const sessionHandler = setInterval(async () => {
     let response = await fetch(CHECK_IF_SESSION_HAS_EXPIRED_URL);
     const sessionHasExpired = await response.text();
     response = await fetch(LOGOUT_WAS_TRIGGERED_URL);
@@ -14,8 +14,8 @@ window.sessionHandler = setInterval(async () => {
     }
     document.body.style.setProperty("visibility","visible");
     if (sessionHasExpired === "true") {
-        clearInterval(window.sessionHandler);
+        clearInterval(sessionHandler);
         window.disableRefreshSafetyAlert = true;
         window.location = "/logout"
     }
-}, 1000);
+}, 10000);
