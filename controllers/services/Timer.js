@@ -11,6 +11,7 @@ window.sessionHandler = setInterval(async () => {
     if (sessionHasExpired === "true") {
         clearInterval(window.sessionHandler);
         window.disableRefreshSafetyAlert = true;
+        sessionStorage.setItem("initialURL", window.location.href);
         window.location = "/logout"
         return
     }
