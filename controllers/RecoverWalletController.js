@@ -8,16 +8,12 @@ import {
   addToggleViewPassword
 } from "./services/UIService.js";
 import WalletService from "./services/WalletService.js";
-import FileService from "./services/FileService.js";
-import WalletRunner from "./services/WalletRunner.js";
 import getVaultDomain from "../utils/getVaultDomain.js";
 
 function RecoverWalletController() {
-  const WALLET_MOUNT_POINT = "/writableDSU";
   let spinner;
   let USER_DETAILS_FILE = "user-details.json";
   const walletService = new WalletService();
-  const fileService = new FileService();
   let self = this;
   let formFields = [];
   let recoveryKey = "";
@@ -55,7 +51,7 @@ function RecoverWalletController() {
 
   }
 
-  function getWalletSecretArrayKey(usePin) {
+  function getWalletSecretArrayKey() {
     let arr = Object.values(LOADER_GLOBALS.credentials).filter(elem => typeof elem !== "boolean");
     return arr;
   }
@@ -86,7 +82,7 @@ function RecoverWalletController() {
   }
 
   this.formIsValid = function () {
-    return validator.validateForm(["password", "confirm-password"]);
+    return window.validator.validateForm(["password", "confirm-password"]);
   }
 
   this.writeUserDetailsToFile = function (wallet, callback) {
@@ -131,7 +127,7 @@ function RecoverWalletController() {
           return console.error(err);
         }
 
-        self.writeUserDetailsToFile(newWallet, (err, data) => {
+        self.writeUserDetailsToFile(newWallet, (err) => {
           if (err) {
             document.getElementById("register-details-error").innerHTML = "could not write user details";
             return console.log(err);
@@ -187,8 +183,6 @@ function RecoverWalletController() {
         let newFromElement = document.getElementsByClassName("credentials-form")[0];
         newFromElement.removeAttribute('hidden');
         let readonlyFormContent = document.getElementsByClassName("readonly-user-data")[0]
-        let newFromContent = document.getElementsByClassName("form-content-container")[0];
-        let recoveryText = document.getElementById("recovery-text").innerHTML = LOADER_GLOBALS.LABELS_DICTIONARY.RECOVERY_TEXT
         newFromElement.append(buttons);
         addToggleViewPassword();
         LOADER_GLOBALS.clearCredentials();

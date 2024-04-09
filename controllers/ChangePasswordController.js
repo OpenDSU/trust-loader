@@ -1,14 +1,11 @@
 import "./../loader-config.js";
 import {Spinner, prepareViewContent} from "./services/UIService.js";
 import WalletService from "./services/WalletService.js";
-import FileService from "./services/FileService.js";
 import getVaultDomain from "../utils/getVaultDomain.js";
 function ChangePasswordController() {
-  const WALLET_MOUNT_POINT = "/writableDSU";
   let spinner;
   let USER_DETAILS_FILE = "user-details.json";
   const walletService = new WalletService();
-  const fileService = new FileService();
   let self = this;
 
   this.displayContainer = function (containerId) {
@@ -125,7 +122,7 @@ function ChangePasswordController() {
           if (err) {
             return console.error(err);
           }
-          self.writeUserDetailsToFile(newWallet, (err, data) => {
+          self.writeUserDetailsToFile(newWallet, (err) => {
             if (err) {
               return console.log(err);
             }

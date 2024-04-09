@@ -4,7 +4,7 @@ import WalletService from "./services/WalletService.js";
 import FileService from "./services/FileService.js";
 import WalletRunner from "./services/WalletRunner.js";
 import getVaultDomain from "../utils/getVaultDomain.js";
-import {generateRandom, createXMLHttpRequest, getCookie, decrypt, getSSOId} from "../utils/utils.js";
+import {generateRandom, createXMLHttpRequest, decrypt, getSSOId} from "../utils/utils.js";
 
 const fileService = new FileService();
 
@@ -131,7 +131,7 @@ function MainController() {
       }
       wallet.safeBeginBatch(err => {
         if (err) {
-          return callback(err);
+          return console.error("Failed to start batch", err);
         }
           wallet.writeFile(USER_DETAILS_FILE, JSON.stringify(LOADER_GLOBALS.credentials), (err) => {
               if (err) {
@@ -141,7 +141,7 @@ function MainController() {
 
               wallet.commitBatch(err => {
                   if (err) {
-                      return callback(err);
+                      return console.error("Failed to commit batch", err);
                   }
                   console.log("A new wallet got initialised...", wallet.getCreationSSI(true));
                   return self.openWallet();
@@ -179,7 +179,7 @@ function MainController() {
     }
 
     if (!(LOADER_GLOBALS.environment.mode === "secure" || LOADER_GLOBALS.environment.mode === "dev-secure")) {
-      return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Unknown mode in environment.js"));
+      return console.error("Invalid mode", LOADER_GLOBALS.environment.mode);
     }
 
     if (LOADER_GLOBALS.environment.mode === "dev-secure" && !LOADER_GLOBALS.credentials.username) {
@@ -205,10 +205,10 @@ function MainController() {
   };
 
   this.formIsValid = function () {
-    return validator.validateForm(self.formFields);
+    return window.validator.validateForm(self.formFields);
   }
 
-  this.pinCheckboxHandler = function (event) {
+  this.pinCheckboxHandler = function () {
     LOADER_GLOBALS.loadPinCodeCredentials(LOADER_GLOBALS.getLastPinCode());
     document.getElementById("pin-container").classList.add("d-none");
 
@@ -401,7 +401,7 @@ function MainController() {
     this.loadWallet();
   }
 
-  this.submitSSOPin = function (event) {
+  this.submitSSOPin = function () {
     let pin = document.getElementById('sso-pincode').value;
     try {
       let secret = decrypt(pin, this.ssoEncryptedSecret);
@@ -413,7 +413,7 @@ function MainController() {
     }
   };
 
-  this.sendSSOGetRequest = function (userId) {
+  this.sendSSOGetRequest = function () {
     let url = fileService.getBaseURL(`getSSOSecret/${LOADER_GLOBALS.environment.appName}`);
     createXMLHttpRequest(url, "GET", (err, result) => {
       if (err || !result) {

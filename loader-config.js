@@ -50,17 +50,6 @@ function addPin(pinCode) {
   localStorage.setItem(LOADER_GLOBALS.LOCALSTORAGE_PINCODE_KEY, JSON.stringify(pinArr));
 }
 
-function removePin(pinCode) {
-  let pinArr = localStorage.getItem(LOADER_GLOBALS.LOCALSTORAGE_PINCODE_KEY);
-  if (pinArr) {
-    pinArr = JSON.parse(pinArr);
-    pinArr = pinArr.filter(elem => elem !== pinCode);
-    localStorage.setItem(LOADER_GLOBALS.LOCALSTORAGE_PINCODE_KEY, JSON.stringify(pinArr));
-  } else {
-    throw new Error("No pin found");
-  }
-}
-
 LOADER_GLOBALS.loadPinCodeCredentials = function (pincode) {
   let pinCodeCredentials = localStorage.getItem(pincode);
   if (!pinCodeCredentials) {

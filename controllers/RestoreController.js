@@ -10,10 +10,6 @@ function RestoreController() {
   let spinner;
   const walletService = new WalletService();
 
-  function displayContainer(containerId) {
-    document.getElementById(containerId).style.display = "block";
-  }
-
   this.init = function () {
     NavigatorUtils.hasRegisteredServiceWorkers((error, hasServiceWorker) => {
       if (hasServiceWorker) {
@@ -38,7 +34,7 @@ function RestoreController() {
     }
   };
 
-  this.validatePIN = function (event) {
+  this.validatePIN = function () {
     pin = document.getElementById("pin").value;
     let pinConfirm = document.getElementById("confirm-pin").value;
     let btn = document.getElementById("set-pin-btn");

@@ -32,7 +32,7 @@ const NavigatorUtils = {
                 console.log(err)
             }
 
-            installing.addEventListener("statechange", (res) => {
+            installing.addEventListener("statechange", () => {
                 if (installing.state === "activated") {
                     callback(null, registration);
                 }
@@ -48,13 +48,13 @@ const NavigatorUtils = {
         return navigator.serviceWorker
           .getRegistrations()
           .then((registrations) => callback(null, registrations))
-          .catch((e) => callback({
+          .catch(() => callback({
             type: "ServiceWorkerError",
             message: "Service Workers are not supported or are restricted by browser settings"
           }));
       }
       let err;
-      if(!!LOADER_GLOBALS.environment.sw){
+      if(LOADER_GLOBALS.environment.sw){
         err = {
             type: "ServiceWorkerError",
             message: "Service Workers are not supported for this browser"
@@ -235,8 +235,8 @@ const NavigatorUtils = {
     },
 
     loadSSAppOrWallet: (seed, swConfig, callback) => {
-        NavigatorUtils.clearSwInScope(swConfig.scope, (err, res) => {
-            NavigatorUtils.registerSW(swConfig, (err, sw) => {
+        NavigatorUtils.clearSwInScope(swConfig.scope, () => {
+            NavigatorUtils.registerSW(swConfig, (err) => {
                 if (err) return callback(err);
 
                 NavigatorUtils.sendSeedToSW(seed, (err) => {

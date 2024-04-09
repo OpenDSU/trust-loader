@@ -1,5 +1,3 @@
-import NavigatorUtils from "./NavigatorUtils.js";
-
 const SpinnerHTML = "<div class=\"loader-container\">\n" +
   "<div class=\"sk-cube-grid\">\n" +
   "    <div class=\"sk-cube sk-cube1\"></div>\n" +
@@ -33,7 +31,6 @@ const RELOAD_SECTION_HTML = `
 function Spinner(view) {
 
   let attachedSpinner = null;
-  let reloadSectionTimeout = null;
   let lastStatusMessage = null;
 
   this.attachToView = function () {

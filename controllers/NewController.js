@@ -39,7 +39,7 @@ function NewController() {
     document.execCommand("copy");
   }
 
-  this.pinCheckboxHandler = function (event) {
+  this.pinCheckboxHandler = function () {
     document.getElementById("pin-input-container").classList.toggle("d-none");
     document.getElementById('pincode-help').innerHTML = LOADER_GLOBALS.LABELS_DICTIONARY.PINCODE_HELP;
   }
@@ -89,7 +89,7 @@ function NewController() {
   };
 
   //TODO Refactore and restructure the whole bs...
-  function getWalletSecretArrayKey(usePin) {
+  function getWalletSecretArrayKey() {
     let arr = Object.values(LOADER_GLOBALS.credentials).filter(elem => typeof elem !== "boolean");
     arr.push(LOADER_GLOBALS.environment.appName);
     return arr;
@@ -113,7 +113,7 @@ function NewController() {
         writableWallet.getKeySSIAsString((err, keySSI) => {
           console.log(`Wallet created. Seed: ${keySSI}`);
 
-          self.writeUserDetailsToFile(writableWallet, (err, data) => {
+          self.writeUserDetailsToFile(writableWallet, (err) => {
             if (err) {
               return console.log(err);
             }
@@ -197,7 +197,7 @@ function NewController() {
     });
   }
 
-  this.submitAfterRegistration = function (event) {
+  this.submitAfterRegistration = function () {
     if (document.getElementById("pin-checkbox").checked && document.getElementById("pincode").getAttribute('valid')) {
       LOADER_GLOBALS.savePinCodeCredentials(document.getElementById("pincode").value, LOADER_GLOBALS.credentials);
       console.log('decrypt ', LOADER_GLOBALS.loadPinCodeCredentials(document.getElementById("pincode").value))
@@ -211,7 +211,7 @@ function NewController() {
   };
 
   this.formIsValid = function () {
-    return validator.validateForm(formFields);
+    return window.validator.validateForm(formFields);
   }
 
   this.createForm = function () {
@@ -242,7 +242,7 @@ function NewController() {
     }
   }
 
-  this.submitSSOPin = function (event) {
+  this.submitSSOPin = function () {
     let pin = document.getElementById('sso-pincode').value;
     this.sendSSOPutRequest(pin);
   };

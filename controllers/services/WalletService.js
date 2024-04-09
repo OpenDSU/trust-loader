@@ -32,7 +32,7 @@ function WalletService(options) {
      */
     this.load = function (domain, secret, callback) {
         console.log("Loading the wallet");
-        NavigatorUtils.unregisterAllServiceWorkers((err, result) => {
+        NavigatorUtils.unregisterAllServiceWorkers((err) => {
             if (err) {
                 return callback(err)
             }

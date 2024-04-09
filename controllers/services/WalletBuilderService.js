@@ -363,7 +363,6 @@ function WalletBuilderService(options) {
             const appsList = [];
 
             wallet.listMountedDossiers('/', (err, data) => {
-                const mountedApps = [];
                 for (const mountPoint of data) {
                     const appName = '/' + mountPoint.path.split('/').pop();
                     const appSeed = mountPoint.dossierReference;

@@ -34,32 +34,25 @@ function generateRandom(length) {
 
 function goToLandingPage() {
   window.location.replace("./");
-};
+}
 
 function encrypt(key, dataObj) {
-  try {
-    if (typeof require !== 'undefined') {
-      const crypto = require("opendsu").loadAPI("crypto");
-      const encryptionKey = crypto.deriveEncryptionKey(key);
-      const encryptedCredentials = crypto.encrypt(JSON.stringify(dataObj), encryptionKey);
-      return JSON.stringify(encryptedCredentials);
-    }
-  } catch (e) {
-    throw e;
+  if (typeof require !== 'undefined') {
+    const crypto = require("opendsu").loadAPI("crypto");
+    const encryptionKey = crypto.deriveEncryptionKey(key);
+    const encryptedCredentials = crypto.encrypt(JSON.stringify(dataObj), encryptionKey);
+    return JSON.stringify(encryptedCredentials);
   }
 }
 
 function decrypt(key, encryptedData) {
-  try {
-    if (typeof require !== 'undefined') {
-      const crypto = require("opendsu").loadAPI("crypto");
-      const encryptionKey = crypto.deriveEncryptionKey(key);
-      const decryptData = crypto.decrypt($$.Buffer.from(JSON.parse(encryptedData)), encryptionKey);
-      return JSON.parse(decryptData.toString());
-    }
-  } catch (e) {
-    throw e
+  if (typeof require !== 'undefined') {
+    const crypto = require("opendsu").loadAPI("crypto");
+    const encryptionKey = crypto.deriveEncryptionKey(key);
+    const decryptData = crypto.decrypt($$.Buffer.from(JSON.parse(encryptedData)), encryptionKey);
+    return JSON.parse(decryptData.toString());
   }
+
 }
 
 function createXMLHttpRequest(url, method, body, callback) {

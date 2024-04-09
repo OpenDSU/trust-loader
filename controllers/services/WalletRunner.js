@@ -124,7 +124,7 @@ function WalletRunner(options) {
         actionButton.innerHTML = "...";
         node.appendChild(actionButton);
         node.appendChild(options);
-        actionButton.addEventListener('click', (event) => {
+        actionButton.addEventListener('click', () => {
           document.querySelector(".app-action-button div#menu-share + ul").classList.toggle('hidden');
         });
         setTimeout(function () {
@@ -258,8 +258,6 @@ function WalletRunner(options) {
     setupLoadEventsListener(iframeElement);
 
     if (!areServiceWorkersEnabled) {
-      let loadingInterval, loadingProgress = 10;
-
       this.spinner.setStatusText(`Loading ...`);
 
       /*      loadingInterval = setInterval(() => {
