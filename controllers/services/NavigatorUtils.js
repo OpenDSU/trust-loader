@@ -2,11 +2,11 @@ let controllersChangeHandlers = [];
 
 let webmanifest = null;
 
-function areServiceWorkersSupported(){
+function areServiceWorkersSupported() {
     return "serviceWorker" in navigator;
 }
 
-if(areServiceWorkersSupported()){
+if (areServiceWorkersSupported()) {
     navigator.serviceWorker.oncontrollerchange = function (event) {
         let serviceWorker = event.target.controller;
         let serviceWorkerUrl = serviceWorker.scriptURL;
@@ -14,7 +14,7 @@ if(areServiceWorkersSupported()){
         if (controllersChangeHandlers.length) {
             let index = controllersChangeHandlers.length;
             while (index--) {
-                const { swName, registration, callback } = controllersChangeHandlers[index];
+                const {swName, registration, callback} = controllersChangeHandlers[index];
                 if (serviceWorkerUrl.endsWith(swName)) {
                     callback(undefined, registration);
                     controllersChangeHandlers.splice(index, 1);
@@ -26,7 +26,7 @@ if(areServiceWorkersSupported()){
 
 const NavigatorUtils = {
     whenSwIsReady: function (swName, registration, callback) {
-        const { installing } = registration;
+        const {installing} = registration;
         if (installing) {
             installing.onerror = function (err) {
                 console.log(err)
@@ -39,29 +39,29 @@ const NavigatorUtils = {
                 console.log("Sw state", installing.state);
             });
         } else {
-            controllersChangeHandlers.push({ swName, registration, callback });
+            controllersChangeHandlers.push({swName, registration, callback});
         }
     },
 
     getRegistrations: (callback) => {
-      if (NavigatorUtils.areServiceWorkersSupported()) {
-        return navigator.serviceWorker
-          .getRegistrations()
-          .then((registrations) => callback(null, registrations))
-          .catch(() => callback({
-            type: "ServiceWorkerError",
-            message: "Service Workers are not supported or are restricted by browser settings"
-          }));
-      }
-      let err;
-      if(LOADER_GLOBALS.environment.sw){
-        err = {
-            type: "ServiceWorkerError",
-            message: "Service Workers are not supported for this browser"
-        };
-      }
-        
-      return callback(err, []);
+        if (NavigatorUtils.areServiceWorkersSupported()) {
+            return navigator.serviceWorker
+                .getRegistrations()
+                .then((registrations) => callback(null, registrations))
+                .catch(() => callback({
+                    type: "ServiceWorkerError",
+                    message: "Service Workers are not supported or are restricted by browser settings"
+                }));
+        }
+        let err;
+        if (LOADER_GLOBALS.environment.sw) {
+            err = {
+                type: "ServiceWorkerError",
+                message: "Service Workers are not supported for this browser"
+            };
+        }
+
+        return callback(err, []);
     },
 
     sendMessage: function (message) {
@@ -99,14 +99,14 @@ const NavigatorUtils = {
     },
 
     sendSeedToSW: (seed, callback) => {
-        NavigatorUtils.sendMessage({ seed: seed })
+        NavigatorUtils.sendMessage({seed: seed})
             .then((data) => callback(null, data))
             .catch(callback);
     },
 
     registerSW: (options, callback) => {
-        const { scope } = options;
-        const registerOptions = scope ? { scope } : undefined;
+        const {scope} = options;
+        const registerOptions = scope ? {scope} : undefined;
 
         if (NavigatorUtils.areServiceWorkersSupported()) {
             console.log("SW Register:", options.path, JSON.stringify(registerOptions));
@@ -121,7 +121,9 @@ const NavigatorUtils = {
                         console.log(err)
                     }
                     NavigatorUtils.whenSwIsReady(options.name, registration, callback);
-                }, (err) => { console.log(err) })
+                }, (err) => {
+                    console.log(err)
+                })
                 .catch((err) => {
                     console.log(err);
                     return OpenDSUSafeCallback(callback)(createOpenDSUErrorWrapper("Service worker registration failed.", err));
@@ -130,7 +132,7 @@ const NavigatorUtils = {
     },
 
     unregisterServiceWorker: (sw, callback) => {
-        sw.unregister({ immediate: true })
+        sw.unregister({immediate: true})
             .then((success) => {
                 if (!success) {
                     console.log("Could not unregister sw ", sw);
@@ -147,13 +149,13 @@ const NavigatorUtils = {
             return navigator.serviceWorker
                 .getRegistration(scope)
                 .then((sw) => {
-                    if (scope == sw.scope) {
-                        console.log("Refreshing sw for scope", scope, sw);
-                        return NavigatorUtils.unregisterServiceWorker(sw, callback)
-                    } else {
-                        callback(undefined);
+                        if (scope == sw.scope) {
+                            console.log("Refreshing sw for scope", scope, sw);
+                            return NavigatorUtils.unregisterServiceWorker(sw, callback)
+                        } else {
+                            callback(undefined);
+                        }
                     }
-                }
                 )
                 .catch(callback);
         }

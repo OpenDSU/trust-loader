@@ -7,7 +7,7 @@ window.sessionHandler = setInterval(async () => {
     response = await fetch(LOGOUT_WAS_TRIGGERED_URL);
     const logout = await response.text();
 
-    document.body.style.setProperty("visibility","visible");
+    document.body.style.setProperty("visibility", "visible");
     if (sessionHasExpired === "true") {
         clearInterval(window.sessionHandler);
         window.disableRefreshSafetyAlert = true;
@@ -16,8 +16,8 @@ window.sessionHandler = setInterval(async () => {
         return
     }
 
-    if(logout === "true"){
-        document.body.style.setProperty("visibility","hidden");
+    if (logout === "true") {
+        document.body.style.setProperty("visibility", "hidden");
         alert("A Single Sign-On (SSO) login process is detected to be in progress across multiple browser instances. If this assessment is incorrect, kindly terminate all browser instances and recommence the login procedure.");
     }
 }, 10000);

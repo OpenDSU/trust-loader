@@ -234,8 +234,7 @@ body {
 
 .btn-primary:hover,
 .btn-primary:active,
-.btn-primary:focus
-{
+.btn-primary:focus {
     background-color: var(--color-dark-blue-hover-button) !important;
 }
 
@@ -629,7 +628,6 @@ label.error {
 #step-complete,
 #step-seed,
 #pin-help,
-#pin-confirm-help
-{
+#pin-confirm-help {
     display: none;
 }

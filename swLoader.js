@@ -1,4 +1,4 @@
-self.addEventListener('activate',  (event) => {
+self.addEventListener('activate', (event) => {
     event.waitUntil(clients.claim());
 });
 
@@ -8,7 +8,7 @@ self.addEventListener('fetch', (event) => {
 
     if (url.indexOf("/iframe/") !== -1) {
         let urlParts = url.split("/iframe/");
-        if (urlParts.length === 2){
+        if (urlParts.length === 2) {
             let basePath = urlParts[0];
             newUrl = basePath + "/assets/app-loader/app-loader.html";
         }

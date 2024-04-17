@@ -125,7 +125,7 @@ export default {
   <p class="m-0">In order to gain access you have to set up your credentials.</p>
   <hr/>
 </div>`,
-    WALLET_BUILDER_SERVICE:{
+    WALLET_BUILDER_SERVICE: {
         CODE_FOLDER_NAME: "code",
         WALLET_TEMPLATE_FOLDER_NAME: "wallet-patch",
         APP_FOLDER_NAME: "/app",

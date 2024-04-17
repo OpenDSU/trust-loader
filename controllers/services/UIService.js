@@ -1,17 +1,17 @@
 const SpinnerHTML = "<div class=\"loader-container\">\n" +
-  "<div class=\"sk-cube-grid\">\n" +
-  "    <div class=\"sk-cube sk-cube1\"></div>\n" +
-  "    <div class=\"sk-cube sk-cube2\"></div>\n" +
-  "    <div class=\"sk-cube sk-cube3\"></div>\n" +
-  "    <div class=\"sk-cube sk-cube4\"></div>\n" +
-  "    <div class=\"sk-cube sk-cube5\"></div>\n" +
-  "    <div class=\"sk-cube sk-cube6\"></div>\n" +
-  "    <div class=\"sk-cube sk-cube7\"></div>\n" +
-  "    <div class=\"sk-cube sk-cube8\"></div>\n" +
-  "    <div class=\"sk-cube sk-cube9\"></div>\n" +
-  "</div>\n" +
-  '<div class="loading-status"></div>' +
-  "</div>";
+    "<div class=\"sk-cube-grid\">\n" +
+    "    <div class=\"sk-cube sk-cube1\"></div>\n" +
+    "    <div class=\"sk-cube sk-cube2\"></div>\n" +
+    "    <div class=\"sk-cube sk-cube3\"></div>\n" +
+    "    <div class=\"sk-cube sk-cube4\"></div>\n" +
+    "    <div class=\"sk-cube sk-cube5\"></div>\n" +
+    "    <div class=\"sk-cube sk-cube6\"></div>\n" +
+    "    <div class=\"sk-cube sk-cube7\"></div>\n" +
+    "    <div class=\"sk-cube sk-cube8\"></div>\n" +
+    "    <div class=\"sk-cube sk-cube9\"></div>\n" +
+    "</div>\n" +
+    '<div class="loading-status"></div>' +
+    "</div>";
 
 /*const RELOAD_SECTION_TIMEOUT_MS = 10 * 1000;
 const RELOAD_SECTION_HTML = `
@@ -30,75 +30,75 @@ const RELOAD_SECTION_HTML = `
 
 function Spinner(view) {
 
-  let attachedSpinner = null;
-  let lastStatusMessage = null;
+    let attachedSpinner = null;
+    let lastStatusMessage = null;
 
-  this.attachToView = function () {
-    if (attachedSpinner) {
-      return;
-    }
-    let element = document.createElement("div");
-    element.classList.add('loader-parent-container');
-    attachedSpinner = view.appendChild(element);
-    attachedSpinner.innerHTML = SpinnerHTML;
+    this.attachToView = function () {
+        if (attachedSpinner) {
+            return;
+        }
+        let element = document.createElement("div");
+        element.classList.add('loader-parent-container');
+        attachedSpinner = view.appendChild(element);
+        attachedSpinner.innerHTML = SpinnerHTML;
 
-/*    reloadSectionTimeout = setTimeout(() => {
-      if (!attachedSpinner) {
-        // the spinner has been removed already
-        return;
-      }
-      if ("contains" in document.body && !document.body.contains(attachedSpinner)) {
-        // the spinner has been replaced by something else
-        return;
-      }
+        /*    reloadSectionTimeout = setTimeout(() => {
+              if (!attachedSpinner) {
+                // the spinner has been removed already
+                return;
+              }
+              if ("contains" in document.body && !document.body.contains(attachedSpinner)) {
+                // the spinner has been replaced by something else
+                return;
+              }
 
-      let reloadSectionElement = document.createElement("div");
-      reloadSectionElement.className = "reload-section";
-      const reloadSection = attachedSpinner.querySelector(".loader-container").appendChild(reloadSectionElement);
-      reloadSection.innerHTML = RELOAD_SECTION_HTML;
+              let reloadSectionElement = document.createElement("div");
+              reloadSectionElement.className = "reload-section";
+              const reloadSection = attachedSpinner.querySelector(".loader-container").appendChild(reloadSectionElement);
+              reloadSection.innerHTML = RELOAD_SECTION_HTML;
 
-      reloadSection.querySelector("button").addEventListener("click", () => {
-        console.log("Unregistering all service workers...");
+              reloadSection.querySelector("button").addEventListener("click", () => {
+                console.log("Unregistering all service workers...");
 
-        NavigatorUtils.unregisterAllServiceWorkers(() => {
-          console.log("Clearing caches...");
+                NavigatorUtils.unregisterAllServiceWorkers(() => {
+                  console.log("Clearing caches...");
 
-          NavigatorUtils.clearCaches(() => {
-            window.location.reload();
-          });
-        });
+                  NavigatorUtils.clearCaches(() => {
+                    window.location.reload();
+                  });
+                });
 
-        console.log("Clearing localStorage");
-        localStorage.clear();
-      });
-    }, RELOAD_SECTION_TIMEOUT_MS);*/
-  };
+                console.log("Clearing localStorage");
+                localStorage.clear();
+              });
+            }, RELOAD_SECTION_TIMEOUT_MS);*/
+    };
 
-  this.removeFromView = function () {
-    if (attachedSpinner) {
-      attachedSpinner.remove();
-      attachedSpinner = null;
-    }
-/*    if (reloadSectionTimeout) {
-      clearTimeout(reloadSectionTimeout);
-    }*/
-  }
-
-  this.setStatusText = function (text) {
-    try {
-      lastStatusMessage = text;
-      const parent = attachedSpinner.querySelector('.loader-container');
-      let loadingStatus = parent.querySelector('.loading-status');
-      loadingStatus.innerHTML = text || '';
-    } catch (e) {
-      console.log("//TODO: pay attention, not critical but should be refactored.");
+    this.removeFromView = function () {
+        if (attachedSpinner) {
+            attachedSpinner.remove();
+            attachedSpinner = null;
+        }
+        /*    if (reloadSectionTimeout) {
+              clearTimeout(reloadSectionTimeout);
+            }*/
     }
 
-  }
+    this.setStatusText = function (text) {
+        try {
+            lastStatusMessage = text;
+            const parent = attachedSpinner.querySelector('.loader-container');
+            let loadingStatus = parent.querySelector('.loading-status');
+            loadingStatus.innerHTML = text || '';
+        } catch (e) {
+            console.log("//TODO: pay attention, not critical but should be refactored.");
+        }
 
-  this.getLastStatusMessage = function () {
-    return lastStatusMessage;
-  }
+    }
+
+    this.getLastStatusMessage = function () {
+        return lastStatusMessage;
+    }
 }
 
 /*
@@ -114,124 +114,124 @@ Add a form element based on configuration object ex:
   }
 * */
 function createFormElement(fieldOptions, controllerOptions) {
-  const id = fieldOptions.fieldId || new Date().getTime().toString();
-  const type = fieldOptions.type || "text";
-  const help = fieldOptions.fieldHelp || "";
-  const placeholder = fieldOptions.placeholder || "";
-  const fieldLabel = fieldOptions.fieldLabel || "";
-  const validator = fieldOptions.validator ? "validator." + fieldOptions.validator + "(event)" : "";
-  const readonly = controllerOptions.readonly || fieldOptions.readonly ? "readonly" : "";
-  const inputValue = controllerOptions.value || "";
-  let element = document.createElement("div");
-  element.classList.add('form-group', 'mb-1');
+    const id = fieldOptions.fieldId || new Date().getTime().toString();
+    const type = fieldOptions.type || "text";
+    const help = fieldOptions.fieldHelp || "";
+    const placeholder = fieldOptions.placeholder || "";
+    const fieldLabel = fieldOptions.fieldLabel || "";
+    const validator = fieldOptions.validator ? "validator." + fieldOptions.validator + "(event)" : "";
+    const readonly = controllerOptions.readonly || fieldOptions.readonly ? "readonly" : "";
+    const inputValue = controllerOptions.value || "";
+    let element = document.createElement("div");
+    element.classList.add('form-group', 'mb-1');
 
-  let inputField = `<input class="form-control" id="${id}" oninput="${validator}" ${readonly} type="${type}" value="${inputValue}" placeholder="${placeholder}"/>`;
+    let inputField = `<input class="form-control" id="${id}" oninput="${validator}" ${readonly} type="${type}" value="${inputValue}" placeholder="${placeholder}"/>`;
 
-  if (type === "password") {
-    inputField = `<div class="d-flex password-wrapper">
+    if (type === "password") {
+        inputField = `<div class="d-flex password-wrapper">
                     <input class="form-control" id="${id}" oninput="${validator}" type="${type}" placeholder="${placeholder}"/>
                     <span class="fa fa-fw fa-eye field-icon toggle-password" input-id="${id}"></span>
                   </div>`
-  }
-  switch (controllerOptions.inputType) {
-    case "simpleInput":
-      element.innerHTML = inputField;
-      break
-    case "labeldInput":
-      element.innerHTML = `<label class="register-detail-label" for="${id}" id="${id}-label">${fieldLabel}</label>
+    }
+    switch (controllerOptions.inputType) {
+        case "simpleInput":
+            element.innerHTML = inputField;
+            break
+        case "labeldInput":
+            element.innerHTML = `<label class="register-detail-label" for="${id}" id="${id}-label">${fieldLabel}</label>
                         ${inputField}`;
-      break
-    case "helperInput":
-      element.innerHTML = `<label class="register-detail-label" for="${id}" id="${id}-label">${fieldLabel}</label>
+            break
+        case "helperInput":
+            element.innerHTML = `<label class="register-detail-label" for="${id}" id="${id}-label">${fieldLabel}</label>
                         ${inputField}
                         <small class="form-text text-muted" id="${id}-help">${help}</small>`
-      break
-  }
-  return element;
+            break
+    }
+    return element;
 }
 
 /*
 * show error on form submit
 * */
 function showFormError(formElement, message) {
-  let element = document.createElement("div");
-  element.classList.add("row", "ml-1");
-  element.id = "custom-form-error-message";
-  element.innerHTML = `<label class="error" id="register-details-error">${message}</label>`
-  formElement.append(element);
+    let element = document.createElement("div");
+    element.classList.add("row", "ml-1");
+    element.id = "custom-form-error-message";
+    element.innerHTML = `<label class="error" id="register-details-error">${message}</label>`
+    formElement.append(element);
 }
 
 /*
 * remove form error
 * */
 function removeFormError() {
-  let element = document.getElementById("custom-form-error-message");
-  if(element !== null) {
-    element.remove()
-  }
+    let element = document.getElementById("custom-form-error-message");
+    if (element !== null) {
+        element.remove()
+    }
 }
 
 /*
 * show/hide content of a password input
 * */
 function toggleViewPassword(event) {
-  const inputId = event.target.getAttribute("input-id");
-  event.target.classList.toggle("fa-eye-slash");
-  let inputField = document.getElementById(inputId);
-  if (inputField.getAttribute("type") === "password") {
-    inputField.setAttribute("type", "text");
-  } else {
-    inputField.setAttribute("type", "password");
-  }
+    const inputId = event.target.getAttribute("input-id");
+    event.target.classList.toggle("fa-eye-slash");
+    let inputField = document.getElementById(inputId);
+    if (inputField.getAttribute("type") === "password") {
+        inputField.setAttribute("type", "text");
+    } else {
+        inputField.setAttribute("type", "password");
+    }
 }
 
 function prepareView(page_labels) {
-  try {
-    page_labels.forEach(page_label => {
-      let labelAttribute = "innerHTML";
-      if (page_label.attribute) {
-        labelAttribute = page_label.attribute;
-      }
-      let labelIdentifier = Object.keys(page_label).find((prop) => {
-        return prop !== "attribute";
-      });
-      const labelElement = document.querySelector(labelIdentifier);
-      if(labelElement){
-        labelElement[labelAttribute] = page_label[labelIdentifier]
-      }
+    try {
+        page_labels.forEach(page_label => {
+            let labelAttribute = "innerHTML";
+            if (page_label.attribute) {
+                labelAttribute = page_label.attribute;
+            }
+            let labelIdentifier = Object.keys(page_label).find((prop) => {
+                return prop !== "attribute";
+            });
+            const labelElement = document.querySelector(labelIdentifier);
+            if (labelElement) {
+                labelElement[labelAttribute] = page_label[labelIdentifier]
+            }
 
-    })
-  } catch (e) {
-    console.log(e);
-  }
+        })
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 function prepareViewContent() {
-  const domElements = document.querySelectorAll('[data-model]');
-  for (let i = 0; i < domElements.length; i++) {
-    domElements[i].innerHTML = LOADER_GLOBALS.LABELS_DICTIONARY[domElements[i].getAttribute("data-model")];
-  }
-  addToggleViewPassword();
+    const domElements = document.querySelectorAll('[data-model]');
+    for (let i = 0; i < domElements.length; i++) {
+        domElements[i].innerHTML = LOADER_GLOBALS.LABELS_DICTIONARY[domElements[i].getAttribute("data-model")];
+    }
+    addToggleViewPassword();
 }
 
 function addToggleViewPassword() {
-  //add ckick listener to toggle password view
-  let passToggles = document.getElementsByClassName("toggle-password");
-  for (let i = 0; i < passToggles.length; i++) {
-    passToggles[i].addEventListener("click", (event) => {
-      toggleViewPassword(event);
-    })
-  }
+    //add ckick listener to toggle password view
+    let passToggles = document.getElementsByClassName("toggle-password");
+    for (let i = 0; i < passToggles.length; i++) {
+        passToggles[i].addEventListener("click", (event) => {
+            toggleViewPassword(event);
+        })
+    }
 }
 
 export {
-  Spinner,
-  prepareView,
-  prepareViewContent,
-  createFormElement,
-  toggleViewPassword,
-  showFormError,
-  removeFormError,
-  addToggleViewPassword
+    Spinner,
+    prepareView,
+    prepareViewContent,
+    createFormElement,
+    toggleViewPassword,
+    showFormError,
+    removeFormError,
+    addToggleViewPassword
 };
 

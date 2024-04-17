@@ -24,10 +24,10 @@ function startLoadingProgressInterval(initialLoadingProgress) {
     }, 1000);
 }
 
-window.frameElement.setAttribute("app-placeholder","true");
+window.frameElement.setAttribute("app-placeholder", "true");
 startLoadingProgressInterval(10);
 
-if(NavigatorUtils.canUseServiceWorkers()) {
+if (NavigatorUtils.canUseServiceWorkers()) {
     window.document.addEventListener(myIdentity, (e) => {
         const data = e.detail || {};
 
@@ -55,7 +55,7 @@ if(NavigatorUtils.canUseServiceWorkers()) {
 
         }
     });
-    
+
     sendMessage({
         query: 'seed'
     });
@@ -82,11 +82,12 @@ function sendLoadingProgress(progress, status) {
         currentWindow = parentWindow;
 
         //same-origin policy applies here
-        try{
-            if(currentWindow.parent.document){
+        try {
+            if (currentWindow.parent.document) {
                 parentWindow = currentWindow.parent;
             }
-        } catch(e){}
+        } catch (e) {
+        }
     }
 
     parentWindow.document.dispatchEvent(new CustomEvent('ssapp:loading:progress', {

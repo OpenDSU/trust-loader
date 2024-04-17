@@ -1,14 +1,14 @@
 {
-    "name": "trust-loader",
-    "version": "v1.1.1",
-    "description": "Web Loader for the Wallet User Interface",
-    "scripts": {
-        "postinstall": "node ./node_modules/octopus/scripts/run dependencies devmode",
-        "update": "npm run postinstall",
-        "build": "node ./node_modules/octopus/scripts/run build devmode"
-    },
-    "dependencies": {
-        "octopus": "git+https://github.com/opendsu/octopus.git"
-    },
-    "license": "MIT"
+  "name": "trust-loader",
+  "version": "v1.1.1",
+  "description": "Web Loader for the Wallet User Interface",
+  "scripts": {
+    "postinstall": "node ./node_modules/octopus/scripts/run dependencies devmode",
+    "update": "npm run postinstall",
+    "build": "node ./node_modules/octopus/scripts/run build devmode"
+  },
+  "dependencies": {
+    "octopus": "git+https://github.com/opendsu/octopus.git"
+  },
+  "license": "MIT"
 }
